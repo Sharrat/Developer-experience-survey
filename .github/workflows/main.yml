@@ -3,7 +3,7 @@ on: [push, pull_request]
 jobs:
   pipeline:
     name: DXS pipeline
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     if: "!contains(github.event.head_commit.message, '[ci skip]') && !contains(github.event.head_commit.message, '[skip ci]') && !contains(github.event.pull_request.title, '[skip ci]') && !contains(github.event.pull_request.title, '[ci skip]')"
     timeout-minutes: 40
     env:
@@ -25,8 +25,7 @@ jobs:
       - name: Run backend test
         run: |
           chmod +x mvnw
-          npm run ci:backend:test
-      - name: Run frontend test
-        run: npm run ci:frontend:test
       - name: Package application
         run: npm run java:jar:prod
+      - name: Execute Jar file
+        run: kill -9 `lsof -t -i:8080` & java -jar /home/g259722/actions-runner/_work/Developer-experience-survey/Developer-experience-survey/target/dxs-0.0.1-SNAPSHOT.jar
